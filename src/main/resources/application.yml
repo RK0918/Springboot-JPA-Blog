@@ -1,0 +1,9 @@
+# .properties 일 경우, spring.~~.~~ 방식이라 가독성 떨어짐
+# 따라서 yml을 사용하여 :와 들여쓰기를 통해 구분
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?serverTimezone=Asia/Seoul
+    username: ti0918
+    password: "0722"
