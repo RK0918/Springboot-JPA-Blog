@@ -1,9 +1,49 @@
 # .properties 일 경우, spring.~~.~~ 방식이라 가독성 떨어짐
 # 따라서 yml을 사용하여 :와 들여쓰기를 통해 구분
 
+# 1. ~~~:(스페이스바 한 칸) 이렇게 써야됨
+# username:(스페이스바 한 칸)ti0918
+# 2. 들여쓰기의 규칙은 스페이 스 두 칸
+server:
+  port: 8000
+  servlet:
+
+    context-path: /blog
+    # 내 프로젝트에 들어가기 위한 진입점 -> context-path
+    # port: 8080, path: /blog 이므로
+    #  http://localhost:8080/http/~~ ->  http://localhost:8000/blog/http/~~
+    # 으로 변경된다.
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/blog?serverTimezone=Asia/Seoul
     username: ti0918
     password: "0722"
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create # create(기존의 user라는 테이블이 있어도 테이블 새로 생성 / update(나중엔 이걸로 바꾸는게 좋음) / none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        # entity를 만들때 변수명 그대로 데이터 피드에 넣어준다는 것
+      use-new-id-generator-mappings: false # false이므로 JPA가 사용하는 기본 넘버링 따라가지 않고
+      # strategy = GenerationType.IDENTITY 에 따라 프로젝트에 연결된 DB 넘버링 전략을 따라감.
+      # true 일경우 -> JPA가 사용하는 기본넘버링을 따라간다
+    show-sql: true # true이기 때문에 sql문이 콘솔창에 보임
+    properties:
+      hibernate.format_sql: true # 마찬가지로 true여서 sql문이 한 줄 말고 깔끔하게 보임
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false

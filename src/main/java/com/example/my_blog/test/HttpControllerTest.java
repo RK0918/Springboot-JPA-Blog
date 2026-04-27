@@ -6,8 +6,29 @@ import org.springframework.web.bind.annotation.*;
 // @Controller
 
 //사용자가 요청 -> 응답(Data) 해주는 컨트롤러
+// @RestController -> 문자 그대로를 return 해줌.
 @RestController
 public class HttpControllerTest {
+
+    private static final String TAG = "HttpControllerTest :" ;
+
+
+    // lombok 라이브러리( getter/setter & 생성자 ) test
+
+    @GetMapping("/http/lombok")
+    public String lombokTest() {
+        Member m = new Member(1, "ssar", "1234", "email");
+        System.out.println(TAG + " getter : " + m.getId());
+        m.setId(5000);
+        System.out.println(TAG + "setter " + m.getId());
+        // 1. @AllArgsConstructor // 전체 생성자
+        // -> Member m1 = new Member(id, username, password, email);
+        // 2. @NoArgsConstructor // 빈 생성자
+        // -> Member m1 = new Member();
+
+
+        return "lombok test 완료";
+    }
 
     // 인터넷 브라우저 요청은 무조건 -> get 요청밖에 할 수 없다(+쿼리 스트링도)
     // http://localhost:8080/http/get (insert)
