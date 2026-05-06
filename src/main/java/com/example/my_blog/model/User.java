@@ -1,12 +1,20 @@
 package com.example.my_blog.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
 // ORM -> java(다른언어 포함) Object -> 테이블로 매핑해주는 기술
+@Data // getter/setter가 없으므로
+@NoArgsConstructor // 빈 생성자
+@AllArgsConstructor // 전체 생성자
+@Builder // 빌더 패턴 -> 배우다 보면 알게됨
 @Entity // 테이블을 만드는 어노테이션, User클래스가 MySQL에 테이블이 생성된다.
 public class User {
 

@@ -33,7 +33,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create # create(기존의 user라는 테이블이 있어도 테이블 새로 생성 / update(나중엔 이걸로 바꾸는게 좋음) / none
+      ddl-auto: update # create(기존의 user라는 테이블이 있어도 테이블 새로 생성 / update(나중엔 이걸로 바꾸는게 좋음) / none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         # entity를 만들때 변수명 그대로 데이터 피드에 넣어준다는 것
