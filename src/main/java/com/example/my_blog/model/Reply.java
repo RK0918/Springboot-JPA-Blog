@@ -30,7 +30,8 @@ public class Reply {
     // 하나의 답변에 여러개의 게시물 -> OneToMany -> ?? 무슨
     @ManyToOne
     @JoinColumn(name = "boardId")
-    private Board borad;
+    private Board board; //
+
 
     // 이 답변을 누가 했는지도 알아야됨
     @ManyToOne
