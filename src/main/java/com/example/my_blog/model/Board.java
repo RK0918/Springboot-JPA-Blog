@@ -29,13 +29,13 @@ public class Board {
     private String title;
 
     @Lob // 대용량 데이터 다룰 때  씀
-    private String contet; // 섬머노트 라이브러리 <html> 태그가 섞여서 디자인이 됨.
+    private String content; // 섬머노트 라이브러리 <html> 태그가 섞여서 디자인이 됨.
 
     @ColumnDefault("0") // 여기선 문자열이 아닌 숫자이기 때문에 "''" 가 아니라 그냥 ""
     private int count; // 조회수
 
 
-    // ManyToOne에 의해 user 데이터는 한 건 밖에 없다 => EAGER 기법 사용(그냥 무조건 가져와라, Board(게시물)에선 무조건 user(작성자)가 필요하기 때문에 EAGER)
+    // ManyToOne에 의해 user 데이터는 한 건 밖에 없다 => EAGER 전략 사용(그냥 무조건 가져와라, Board(게시물)에선 무조건 user(작성자)가 필요하기 때문에 EAGER)
     @ManyToOne(fetch = FetchType.EAGER) // => Many = Board, one = User (여래 개의 게시글은 한 명의 유저에 의해 쓰일 수 있다는 뜻, 마찬가지로 응용하면 Many = one, User = one => 연관관계가 만들어지는 것
     @JoinColumn(name ="userId") // 실제로 데이터가 만들어질 땐 userId로 만들어질거다란 뜻 => 근데 userId라고 그냥 들어가면 연관관계가 없으니 연관관계를 맺어줘야됨. => ManyToOne
     private User userId;
@@ -55,10 +55,14 @@ public class Board {
     // reply는 여러 개가 존재할 수 있으므로 List<> 타입으로 설정
 
 
+
+
+
     // 아래 (mappedBy = "board")는 reply 클래스의 private Board board << 에서 board를 적어주면 됨
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER ) // mappedBy 연관관계의 주인이 아니다. (난 FK가 아님) DB에 컬럼xx
+    // mappedBy 연관관계의 주인이 아니다. (난 FK가 아님) DB에 컬럼xx
     // @JoinColumn(name="replyId") 가 굳이 필요없음 강의, replyId가 들어오는 게 말이 안됨
     // 답변(reply)이 늘어나서 1, 2... 가 늘어나게 되면 1정규화가 깨지게 됨.(원자성x), 따라서 필요없음
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER )
     private List<Reply> reply; // reply는 연관관계의 주인이 아님. board를 셀렉트 할 때 join문을 통해 값을 얻기 위해 필요한 것
     // reply는 수십 만건이 될 수도 있으므로 들고올수도, 들고오지 않을 수도 있음 => Lazy 기법 사용
     // 그러나 ! 댓글을 펼치기나, 다른 팝업을 통해 보는 게 아니고 게시물을 눌러서 상세보기를 통해 한 꺼번에 볼 경우
