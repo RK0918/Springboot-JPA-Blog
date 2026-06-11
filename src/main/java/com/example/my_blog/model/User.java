@@ -30,7 +30,7 @@ public class User {
     private int id; // 시퀀스(오라틀), auto-increment(mysql)
     // 따라서 위 방식에 따라 테이블에 insert 할 때 id값은 비워놔도 자동으로 들어감
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true) // unique = true (중복 못들어감)
     private String username; // 아이디
 
     @Column(nullable = false, length = 100) // 123456 => 해쉬(비밀번호 암호화)
