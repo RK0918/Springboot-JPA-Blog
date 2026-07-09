@@ -31,7 +31,8 @@ spring:
     password: "0722"
 
   jpa:
-    open-in-view: true
+    open-in-view: true # true : lazy 로딩이 가능해진다, 영속성을 프리젠테이션 계층까지 가져감. ( https://getinthere.tistory.com/27 - 3. 스프링부트의 트랜잭션 참고 )
+    # 만약 위 open-in-view : false -> 할 경우 영속성 컨텐스트(Persistence Context)의 시작 지점이 User Interface -> Service 단계로 내려오게 된다.( Controller에서 lazy loading이 안되게 됨)
     hibernate:
       ddl-auto: update # create(기존의 user라는 테이블이 있어도 테이블 새로 생성 / update(나중엔 이걸로 바꾸는게 좋음) / none
       naming:

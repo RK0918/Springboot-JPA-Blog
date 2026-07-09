@@ -15,20 +15,18 @@
   </div>
 
   <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" class="form-control" placeholder="Enter password" id="password">
-    </div>
-
-  <div class="form-group">
-      <label for="Email">Email address:</label>
-      <input type="email" class="form-control" placeholder="Enter email" id="email">
-    </div>
-
-
-    </form>
-      <button id="btn-save" class="btn btn-primary">회원가입 완료</button>
+    <label for="password">Password:</label>
+    <input type="password" class="form-control" placeholder="Enter password" id="password">
+  </div>
+  <div class="form-group form-check">
+    <label class="form-check-label">
+      <input class="form-check-input" type="checkbox"> Remember me
+    </label>
+  </div>
+</form>
+<button id="btn-login" class="btn btn-primary">로그인</button>
 
 </div>
-<!-- id = "btn-save" -->
+
 <script src = "/blog/js/user.js"> </script>
 <%@ include file =  "../layout/footer.jsp"%>
