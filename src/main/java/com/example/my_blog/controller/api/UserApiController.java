@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import org.eclipse.tags.shaded.org.apache.regexp.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class UserApiController {
     @Autowired
     private UserService userService;
 
+
 /*    // 아래  login() 함수에서 HttpSession session을 매개변수로 받아도 되지만
     // 그냥 @Autowired를 통해서 di해도 됨
     @Autowired
@@ -30,19 +32,33 @@ public class UserApiController {
 
     // 1. 회원가입 api ( jquery(user.js) 에 의해 작동 )
     // 요청받는게 JSON이므로 @RequestBody
-    @PostMapping("/api/user")
+    @PostMapping("/auth/joinProc")
     public ResponseDto<Integer> save(@RequestBody User user) {
         System.out.println("UserApiController : save 호출됨");
 
         // 실제로 DB에 isnert하고 아래에서 return 이 되면 됨.
-
-        user.setRole(RoleType.USER);
         userService.회원가입(user);
         // status -> OK 보다는 value()로 설정하여 200(성공), 500(실퍠) 상태값을 보여주는게 좋음
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
         // user.js에서 done(fucntion(resp){})에서 위 코드에 다라서
         // resp에 HttpStatus.OK, 1 이 반환됨.
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*    // 전통적인 방식의 로그인 방식
