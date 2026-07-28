@@ -42,6 +42,10 @@ public class UserApiController {
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
         // user.js에서 done(fucntion(resp){})에서 위 코드에 다라서
         // resp에 HttpStatus.OK, 1 이 반환됨.
+
+
+        // 2. 로그인 api 는 필요하지 않나요? -> 스프링 시큐리티에서 로그인 세션을 가로챔
+        // 따라서 SecurityConfig -> loginProcessingUrl() 참고
     }
 
 

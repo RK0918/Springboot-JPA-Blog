@@ -1,5 +1,7 @@
 package com.example.my_blog.config;
 
+import com.example.my_blog.config.auth.PrincipalDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,10 +16,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(prePostEnabled = true) // 특정 주소로 접근을 하면 권한 및 인증을 미리 체크하겠다는 뜻.
 public class SecurityConfig {
 
+
+    @Autowired
+    private PrincipalDetailService principalDetailService;
+
     @Bean // Ioc가 됨.
     public BCryptPasswordEncoder encodePWD() {
         return new BCryptPasswordEncoder();
     }
+
+    // 시큐리티가 대신 로그인해주는데 passowrd를 가로채기를 하는데
+    // 해당 password가 뭘로 해쉬가 되어 회원가입이 되었는지 알아야
+    // 같은 해쉬로 암호화해서 DB에 있는 해쉬랑 비교할 수 있음.
+    // -> PrincipalDetail + PrincipalDetailService 클래스를
+    // 만들고 @Service -> 자동으로 스프링 빈에 등록하여 작동
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
