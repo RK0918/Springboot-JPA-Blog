@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,8 +38,9 @@ public class UserApiController {
         System.out.println("UserApiController : save 호출됨");
 
         // 실제로 DB에 isnert하고 아래에서 return 이 되면 됨.
+        user.setRole(RoleType.USER);
         userService.회원가입(user);
-        // status -> OK 보다는 value()로 설정하여 200(성공), 500(실퍠) 상태값을 보여주는게 좋음
+        // status -> OK 보다는 value()로 설정하  여 200(성공), 500(실퍠) 상태값을 보여주는게 좋음
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
         // user.js에서 done(fucntion(resp){})에서 위 코드에 다라서
         // resp에 HttpStatus.OK, 1 이 반환됨.
@@ -46,6 +48,15 @@ public class UserApiController {
 
         // 2. 로그인 api 는 필요하지 않나요? -> 스프링 시큐리티에서 로그인 세션을 가로챔
         // 따라서 SecurityConfig -> loginProcessingUrl() 참고
+    }
+
+    @PutMapping("/user")
+    // @RequestBody로 받아야 json을 받을 수 있음.
+    // 아니라면 key=value 형태로 받을 수 있고, x-www-form-urlencoded
+    public ResponseDto<Integer> update(@RequestBody User user) {
+        userService.회원수정(user); // 이제 userService에서 회원수정 기능을 만듦
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+
     }
 
 

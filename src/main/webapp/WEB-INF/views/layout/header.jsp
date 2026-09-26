@@ -2,6 +2,10 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<%-- sec:authorize :  스프링 시큐리티가 제공하는 jsp 태그
+     acces : 내부 내용 실행할 조건을 작성하는 속성
+     isAuthenticated() : 현재 사용자가 로그인한 사용자인지 판단하는 기본 제공 메서드
+--%>
 <sec:authorize access = "isAuthenticated()">
     <sec:authentication property = "principal" var = "principal"/>
 </sec:authorize>
@@ -17,6 +21,9 @@
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs4.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs4.min.js"></script>
 </head>
 <body>
 
@@ -49,10 +56,10 @@
 
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/board/form">글쓰기</a>
+            <a class="nav-link" href="/board/saveForm">글쓰기</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/user/form">회원정보</a>
+            <a class="nav-link" href="/user/updateForm">회원정보</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/logout">로그아웃</a>

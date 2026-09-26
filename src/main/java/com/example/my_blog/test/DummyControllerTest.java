@@ -47,21 +47,21 @@ public class DummyControllerTest {
 
     // 수정할 때, id와 username은 수정안할 것
     // email, password 수정
-    
-    @Transactional // 함수 종료시에 자동 commit이 됨.ㄴ save() 주석처리됐음에도 업데이트가 됨.
+
+    @Transactional // 함수 종료시에 자동 commit이 됨. save() 주석처리됐음에도 업데이트가 됨.
     @PutMapping("/dummy/user/{id}")
     public User updateUser(@PathVariable int id, @RequestBody User requestUser) { // @RequestBody 어노테이션 -> json 데이터를 요청 =>  Java Object(MessageConvert의 Jackson 라이브러이에서 라이브러리가 변환해서 받아줌.
         // // @RequestBody를 통해서 josn 형태로 데이터를 받음.
-        System.out.println("id : " + id );
+        System.out.println("id : " + id);
         System.out.println("password : " + requestUser.getPassword());
-        System.out.println("email : "  + requestUser.getEmail());
+        System.out.println("email : " + requestUser.getEmail());
         // 그냥 데이터를 set() 해버리고 save()를 해버리면 insert때는 괜찮지만 update는 수정되는 값 이외에
         // username, role 등의 값들이 null이 나오면서 오류발생
         // 따라서 findById()를 통해 데이터 조회 -> user 변수에 id값에 해당하는 user 데이터를 담고
         // get() -> set() -> save()
         // null값이 아닌 전체 데이터에서 password와 email이 수정(update)됨.
 
-        User user = userRepository.findById(id).orElseThrow(()-> {
+        User user = userRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("수정에 실패하였습니다.");
         }); // id를 조회하고 셀렉트하는 이 때, 영속화가 된다. (영속성 컨텍스트)
         user.setPassword(requestUser.getPassword());
@@ -85,20 +85,20 @@ public class DummyControllerTest {
         return userRepository.findAll();
 
     }
+
     // 한 페이지당 2건의 데이터를 리턴받아 볼 예정 ( size(2건씩), sort=정렬기준, direction= 정렬을 어떤식으로(id를 DESC(최신순)))
     @GetMapping("/dummy/user")
-    public List<User> pageList(@PageableDefault(size = 2, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Page<User> pageList(@PageableDefault(size = 2, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         // jpa
-        Page<User> pagingUser =  userRepository.findAll(pageable);
+        Page<User> pagingUser = userRepository.findAll(pageable);
 
         // if(pagingUser.isLast()) 나 여러 메소드를 이용하여 분기처리도 가능
         // 노션에 정리해놓음
 
         List<User> users = pagingUser.getContent();
 
-        return users;
+        return pagingUser;
     }
-
 
 
     // 1. insert

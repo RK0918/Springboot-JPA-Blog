@@ -14,6 +14,4 @@ import org.springframework.http.HttpStatus;
 public class ResponseDto<T> {
     int status;
     T data;
-
-    // api -> UserApiController 로 이동
 }

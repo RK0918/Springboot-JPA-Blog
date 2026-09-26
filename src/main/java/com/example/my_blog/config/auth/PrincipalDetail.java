@@ -1,17 +1,27 @@
 package com.example.my_blog.config.auth;
 
 import com.example.my_blog.model.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-//  스프링 시큐리티가 로그인 요청을 가로채서 로그인을 진행, 완료되면 UserDetails 타입의 오브젝트
-// 스프링 시큐리티의 고유한 세션저장소에 저장을 해준다.
+// 스프링 시큐리티가 로그인 요청을 가로채서 로그인을 진행, 완료되면 UserDetails 타입의 오브젝트
+// 스프링 시큐리티의 고유한 세션저장소에 저장을 해준다. => UserDetails 타입의 PrincipalDetail임.
+// UserDetails가 여러가지 추상메서드를 들고 있음 -> 오버라이딩 해야됨.
+
+@Getter // 이래야 BoardApiController에서 user 정보를 가진 principal을 쓸 수 있음. ( Data도 되지만 Setter는 쓰지 않을 거 같아 Getter 어노태이션만 사용)
 public class PrincipalDetail implements UserDetails {
-    private User user; // 콤포지션(-> 객체를 품고있음 )
+    private User user;// 콤포지션(-> 객체를 품고있음 )
+    // principal.user -> principal.user.username 등에 정보 접근 가능
+    // 따라서 haeder.jsp에 있는 principal 변수에 할당되어 해당정보 접근가능하므로
+    // user 폴더에 있는 updateForm.jsp (회원수정) 에서 header에 있으므로
+    // updateForm에서도 value = "${principal.user.~~~} 로 가능
+
 
     // PrincipalDetailService 클래스에서 new PrincipalDetail() 을 반환해야되는데
     // 없으므로 생성자를 만들어줌
@@ -30,15 +40,19 @@ public class PrincipalDetail implements UserDetails {
         collectors.add(new GrantedAuthority() { // <- 익명클래스(오브젝트)
             @Override
             public String getAuthority() { // <-함수 추상메서드가 오버라이딩
-                return "ROLE_" + user.getRole(); // ROLE_USER -> 이렇게 돼야 확인됨
-                // Role을 받을 때 꼭 스프링에선 "ROLE_" 를 붙여야됨
+                return "ROLE_" + user.getRole();
             }
         });
 */
-        // 위 코드에서 어차피 GrantedAutohrity() -> 하나의 메서드( getAuthority() ) 만 가지고
-        // 있으며, 위 타입만을 가져야 하므로 () -> 가 가능
+        // 위 코드에서 어차피
+        // 1. 위 타입(GrantedAutohrity)만을 가져야 하고
+        // 2. GrantedAutohrity() -> 하나의 메서드( getAuthority() ) 만 가지므로(메서드가 하나이므로 충족)
+        // () -> 가 가능해짐.
+
         collectors.add(() -> {
                     return "ROLE_" + user.getRole();
+                    // ROLE_USER -> 이렇게 돼야 확인됨
+                    // Role을 받을 때 꼭 스프링에선 "ROLE_" 를 붙여야됨
                 }
         );
 
@@ -52,30 +66,30 @@ public class PrincipalDetail implements UserDetails {
 
     @Override
     public String getUsername() {
-        return getUsername();
+        return user.getUsername();
     }
 
-    // 계정이 만료되지 않았는지 리턴 (true 만료안됨)
+    // 계정이 만료되지 않았는지 리턴 (true : 만료안됨)
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     // 계정이 잠겨있지 않았는지 리턴 (true : 잠기지 않음)
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     // 비밀번호가 만료되지 않았는지 리턴 (true : 만료안됨)
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     // 계정 활성화가 되어있는지 리턴( true: 활성화)
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 }

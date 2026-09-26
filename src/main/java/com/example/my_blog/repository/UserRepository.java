@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
 
+    // PrincipalDetailService 클래스 때문에 따로 만들어주는 함수
     // SELECT * FROM user WHERE username =1?; <- 이것도 네이밍쿼리
     Optional<User> findByUsername(String username);
 }

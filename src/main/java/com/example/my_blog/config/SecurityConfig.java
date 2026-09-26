@@ -16,9 +16,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(prePostEnabled = true) // 특정 주소로 접근을 하면 권한 및 인증을 미리 체크하겠다는 뜻.
 public class SecurityConfig {
 
-
-    @Autowired
-    private PrincipalDetailService principalDetailService;
+    //
+    //@Autowired
+    //private PrincipalDetailService principalDetailService;
 
     @Bean // Ioc가 됨.
     public BCryptPasswordEncoder encodePWD() {
@@ -31,6 +31,12 @@ public class SecurityConfig {
     // -> PrincipalDetail + PrincipalDetailService 클래스를
     // 만들고 @Service -> 자동으로 스프링 빈에 등록하여 작동
 
+    // 원래 구버전에선
+    // protect void configure(AuthenticationManagerBuilder auth) throws Excetpion {
+    // auth.userDetailsService(principalService).passwordEncoder(encodePWD());} 를 해줘야 하나
+    // 지금은 그냥 @Autowired private PrincipalDetailService principalDetailService; DI 해주면 됨.
+    // 메서드를 따로 구현해야 했지만 지금은 필요없어짐. 스프링시큐리티에서 자동으로 처리
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,16 +46,19 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/").permitAll()
 
-                        .requestMatchers("/js/**", "/css/**", "/image/**").permitAll()
+                        .requestMatchers("/js/**", "/css/**", "/image/**", "/dummy/**").permitAll()
                         .requestMatchers("/WEB-INF/**").permitAll()
                         .anyRequest().authenticated()
                 )
+
                 // 아래는 위와 다르게 인증이 되지 않은 페이지는 아래로
                 .formLogin(form -> form
                         .loginPage("/auth/loginForm")
-                        .loginProcessingUrl("/auth/loginProc")
-                        .defaultSuccessUrl("/") // 스프링 시큐리티가 해당 주소로 요청이 오는 로그인을 가로채서 대신 로그인
+                        .loginProcessingUrl("/auth/loginProc")  //스프링 시큐리티가 해당 주소로 요청이 오는 로그인을 가로채서 대신 로그인
+                        .defaultSuccessUrl("/") // 로그인이 성공하면 어디로 가냐는 함수 -> 로그인 성공시 "/"
+                        .failureUrl("/") // -> 실패시 어디로 ?  일단 임시로 "/"
                 );
+        // 그리고 이후에 따로 위에 설명했듯이 user오브젝트를 담은 p
         return http.build();
     }
 }

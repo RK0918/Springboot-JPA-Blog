@@ -3,6 +3,10 @@ let index = {
         $("#btn-save").on("click", ()=> { // function() {}, () => this를 바인딩하기 위해서
             this.save();
             });
+
+        $("#btn-update").on("click", ()=> { // function() {}, () => this를 바인딩하기 위해서
+            this.update();
+            });
          },
 
 
@@ -35,6 +39,34 @@ let index = {
         }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
 
     },
+
+    update: function() {
+            // 아래 data값을 수정하고 -
+            let data = {
+                id : $("#id").val(),
+                password : $("#password").val(),
+                email : $("#email").val(),
+
+            };
+
+
+            $.ajax({
+                type : "PUT",
+                // 이제 마지막으로 UserApiController 로 넘어가서 아래 url 페이지 작성("/user") -> 그리고 userService.회원수정() 메서드 만들러 userService로
+                url : "/user", // user 컨트롤러를 보면 /user로 시작하기 때문
+                data : JSON.stringify(data),// http body 데이터, data: data로 해버리면 java에서 던져버릴 때 java에서 이해못함. json 문자열로 변경
+                contentType : "application/json; charset = utf-8", // body데이터가 어떤 타입인지(MIME)
+                dataType : "json" // 요청을 서버로 해서 응답이 왔을 때 기본적으로 모든 것이 문자열( 생긴게 json이면 =>
+            }).done(function(resp){
+                alert("회원수정 완료");
+                console.log(resp);
+                location.href = "/";
+            }).fail(function(error){
+
+                alert(JSON.stringify(error));
+            }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
+
+        },
 
    }
 
