@@ -40,10 +40,14 @@ let index = {
 
     },
 
+    // 또한 회원수정 시 세션값을 변경하기 위해 username 데이터도 보내야됨.
+    // 그래야 Authentication 객체를 생성할 수 있음.
+
     update: function() {
             // 아래 data값을 수정하고 -
             let data = {
                 id : $("#id").val(),
+                username : $("#username").val(),
                 password : $("#password").val(),
                 email : $("#email").val(),
 

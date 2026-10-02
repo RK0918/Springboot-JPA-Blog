@@ -26,14 +26,15 @@ public class User {
     // 여기선 MYSQL을 사용하므로 IDENTITY 에서 테이블 번호를 따라가는
     // TABLE 방식을 따르게 된다.
     @Id // Primary key
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; // 시퀀스(오라틀), auto-increment(mysql)
     // 따라서 위 방식에 따라 테이블에 insert 할 때 id값은 비워놔도 자동으로 들어감
 
     @Column(nullable = false, length = 30, unique = true) // unique = true (중복 못들어감)
     private String username; // 아이디
 
-    @Column(nullable = false, length = 100) // 123456 => 해쉬(비밀번호 암호화)
+
+    @Column(length = 100) // 123456 => 해쉬(비밀번호 암호화)
     private String password;
 
     @Column(nullable = false, length = 50)

@@ -4,6 +4,8 @@ import com.example.my_blog.config.auth.PrincipalDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,9 +18,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(prePostEnabled = true) // 특정 주소로 접근을 하면 권한 및 인증을 미리 체크하겠다는 뜻.
 public class SecurityConfig {
 
-    //
+
     //@Autowired
     //private PrincipalDetailService principalDetailService;
+
 
     @Bean // Ioc가 됨.
     public BCryptPasswordEncoder encodePWD() {
@@ -37,6 +40,15 @@ public class SecurityConfig {
     // 지금은 그냥 @Autowired private PrincipalDetailService principalDetailService; DI 해주면 됨.
     // 메서드를 따로 구현해야 했지만 지금은 필요없어짐. 스프링시큐리티에서 자동으로 처리
 
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+
+        return authenticationConfiguration.getAuthenticationManager();
+
+
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

@@ -1,6 +1,7 @@
 package com.example.my_blog.controller.api;
 
 
+import com.example.my_blog.config.auth.PrincipalDetail;
 import com.example.my_blog.dto.ResponseDto;
 import com.example.my_blog.model.RoleType;
 import com.example.my_blog.model.User;
@@ -9,6 +10,12 @@ import jakarta.servlet.http.HttpSession;
 import org.eclipse.tags.shaded.org.apache.regexp.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +30,11 @@ public class UserApiController {
 
     @Autowired
     private UserService userService;
+    // 회원수정 시 session 변경을 위해 spring security에서
+    // 먼저 AuthenticaitonManager 를 생성하여 bean에 등록
+    // 이후 UserService에서 di하여 사용, 이후 아래 회원수정()메서드에서 세션등록
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
 
 /*    // 아래  login() 함수에서 HttpSession session을 매개변수로 받아도 되지만
@@ -52,10 +64,21 @@ public class UserApiController {
 
     @PutMapping("/user")
     // @RequestBody로 받아야 json을 받을 수 있음.
-    // 아니라면 key=value 형태로 받을 수 있고, x-www-form-urlencoded
+    // 아니라면 key=value 형태로 받을 수 있고, x-www-form-urlencoded 매개변수 받기
+    // 1. 세션값 변경을 위해 @AuthenticationPrincipal, HttpSession 매개변수 받기
     public ResponseDto<Integer> update(@RequestBody User user) {
         userService.회원수정(user); // 이제 userService에서 회원수정 기능을 만듦
+        // 여기서는 트랜잭션이 종료되기 때문에 DB에 값은 변경이 됐음
+        // 그러나 세션값은 변경되지 않았기 때문에 우리가 직접 세션값을 변경해줘야 됨.
+  
+        // 세션 등록(Authenticaiton 객체가 만들어지면서 등록)
+        // userService에서 세션등록을 하려 했으나 그러면 db에 등록되기 전에 전에 로그인요청을 하는 것이기 때문에
+        // 그럴 수 없음 -> userApiController에서 세션등록을 하는 것이 맞음.
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+
 
     }
 

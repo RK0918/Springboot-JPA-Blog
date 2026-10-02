@@ -5,6 +5,10 @@ import com.example.my_blog.model.RoleType;
 import com.example.my_blog.model.User;
 import com.example.my_blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +50,10 @@ public class UserService {
         String encPassword = encoder.encode(rawPassword); // 해쉬
         persistance.setPassword(encPassword);
         persistance.setEmail(user.getEmail());
+
         // 회원수정 함수 종료 시 => 서비스 종료 => 트랜잭션이 종료 => commit이 자동으로 됨
-        // 영속화된 persistance 객체의 변화가 감지 => 더티체킹 => update문을 날려줌 
+        // 영속화된 persistance 객체의 변화가 감지 => 더티체킹 => update문을 날려줌
+
 
     }
 

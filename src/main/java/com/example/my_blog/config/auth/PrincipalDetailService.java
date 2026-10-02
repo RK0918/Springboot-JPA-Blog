@@ -38,9 +38,9 @@ public class PrincipalDetailService implements UserDetailsService {
 
         // 아래처럼 그냥 PrincipalDetail() 해주면 null로 반환되기 때문에
         // PrincipalDetail 클래스에서 따로 생성자를 만들어줘야 됨
-        return new PrincipalDetail(principal); // 시큐리티의 세션에 유저 정보가 저장됨. 우리가 회원가입한 정보를 가지고 세션에 넣고 로그인처리를 해야되기 때문에
-        // -> PrincipalDetail 클래스에서 null이기 때문에 따로
-        // PrincipalDetail 생성자를 만든다
+        return new PrincipalDetail(principal);
+        // 시큐리티의 세션에 유저 정보가 저장됨.
+        // 우리가 회원가입한 정보를 가지고 세션에 넣고 로그인처리를 해야되기 때문에
     }
 
 
