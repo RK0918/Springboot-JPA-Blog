@@ -37,6 +37,15 @@
         <div> ${board.content}</div>
       </div>
       <hr />
+
+      <div>
+        <div>
+            <div><textarea class="form-control" rows = "1">  </textarea> </div>
+            <%-- btn btn-primary -> 파란색 버튼  --%>
+            <div><button class = "btn btn-primary">등록</button></div>
+
+        </div>
+      </div>
 </div>
 
 <script src = "/js/board.js"> </script>

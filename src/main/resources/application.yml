@@ -49,6 +49,17 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
+  http:
+    encoding:
+      charest: UTF-8
+      enabled: true
+      force: true
+
+# 카카오 로그인 시 아래 key로 카카오 로그인시(Oauth) 만들어지는 패스워드를 key로 함
+cos:
+  key: ti0722
+
+
 #logging:
 #  level:
 #    org.springframework.security: DEBUG

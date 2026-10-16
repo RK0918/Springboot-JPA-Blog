@@ -39,7 +39,7 @@ let index = {
         }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
 
     },
-
+u
     // 또한 회원수정 시 세션값을 변경하기 위해 username 데이터도 보내야됨.
     // 그래야 Authentication 객체를 생성할 수 있음.
 

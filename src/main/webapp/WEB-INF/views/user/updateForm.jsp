@@ -4,7 +4,7 @@
 
 <%@ include file =  "../layout/header.jsp"%>
 
-<!--model에서 회원가입할 때 뭐가 필요한지 확인 -->
+<!--model에서 회원가입할 때 뭐가 필요한지 확인하고 회원수정 시 데이터 활용 -->
 
 <div class="container">
 
@@ -20,15 +20,21 @@
     <input type="text" value = "${principal.user.username}" class="form-control" placeholder="Enter username" id="username" readonly>
   </div>
 
-  <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" class="form-control" placeholder="Enter password" id="password">
+
+<%-- kakao로 그인하여 ouath 속성이 "kakao"일시에는 패스워드변경 못하게 막음
+비어있을 경우에는 일반회원가입이므로 패스워드 수정 가능 --%>
+  <c:if test = "${empty principal.user.oauth}">
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" placeholder="Enter password" id="password">
     </div>
+  </c:if>
+
 
   <div class="form-group">
       <label for="Email">Email address:</label>
-      <input type="email" value = "${principal.user.email}" class="form-control" placeholder="Enter email" id="email">
-    </div>
+      <input type="email" value = "${principal.user.email}" class="form-control" placeholder="Enter email" id="email" readonly>
+  </div>
 
 
     </form>

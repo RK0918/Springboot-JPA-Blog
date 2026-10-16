@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 @Configuration // 빈등록 (IoC관리)
 @EnableWebSecurity // 시큐리티 필터가 등록이 된다.
@@ -22,6 +24,42 @@ public class SecurityConfig {
     //@Autowired
     //private PrincipalDetailService principalDetailService;
 
+
+    // Spring Security 6에서는 이전 작업만으로
+    // 다음 HTTP 요청까지 인증 정보가 유지되는 것이 보장되지 않기 때문에 SpringConfig에서 반드시
+    // 아래 SecurityContextRepository를 bean에 등록하고 userController에서 di해서 사용한다.
+    // SecurityContext를 HTTP 세션에 저장하기 위한 Bean 등록
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            SecurityContextRepository securityContextRepository
+    ) throws Exception {
+
+        http
+                .csrf(csrf -> csrf.disable())
+                .securityContext(context -> context
+                        .securityContextRepository(securityContextRepository)
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/js/**", "/css/**", "/image/**", "/dummy/**").permitAll()
+                        .requestMatchers("/WEB-INF/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/auth/loginForm")
+                        .loginProcessingUrl("/auth/loginProc")
+                        .defaultSuccessUrl("/")
+                );
+
+        return http.build();
+    }
 
     @Bean // Ioc가 됨.
     public BCryptPasswordEncoder encodePWD() {
@@ -50,27 +88,4 @@ public class SecurityConfig {
 
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())// csrf 토큰 비활성화 (테스트시 걸어서 토큰없이도 통과되도록 함)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/").permitAll()
-
-                        .requestMatchers("/js/**", "/css/**", "/image/**", "/dummy/**").permitAll()
-                        .requestMatchers("/WEB-INF/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-
-                // 아래는 위와 다르게 인증이 되지 않은 페이지는 아래로
-                .formLogin(form -> form
-                        .loginPage("/auth/loginForm")
-                        .loginProcessingUrl("/auth/loginProc")  //스프링 시큐리티가 해당 주소로 요청이 오는 로그인을 가로채서 대신 로그인
-                        .defaultSuccessUrl("/") // 로그인이 성공하면 어디로 가냐는 함수 -> 로그인 성공시 "/"
-                        .failureUrl("/") // -> 실패시 어디로 ?  일단 임시로 "/"
-                );
-        // 그리고 이후에 따로 위에 설명했듯이 user오브젝트를 담은 p
-        return http.build();
-    }
 }

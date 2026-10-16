@@ -30,7 +30,7 @@ public class User {
     private int id; // 시퀀스(오라틀), auto-increment(mysql)
     // 따라서 위 방식에 따라 테이블에 insert 할 때 id값은 비워놔도 자동으로 들어감
 
-    @Column(nullable = false, length = 30, unique = true) // unique = true (중복 못들어감)
+    @Column(nullable = false, length = 100, unique = true) // unique = true (중복 못들어감)
     private String username; // 아이디
 
 
@@ -45,6 +45,8 @@ public class User {
     // DB는 RoleType이란게 없다.
     @Enumerated(EnumType.STRING) // Enum인데 타입은 String이다.
     private RoleType role; // String 타입말고 Enum을 쓰는게 좋다. // admin, user, manager ( 도메인(역할)을 정하여 권한 부여)
+
+    private String oauth; // kakao, google 등으로 로그인 했을시
 
     @CreationTimestamp // 시간이 자동입력
     private Timestamp createDate; // 회원 내용을 수정하는 updateDate도 필요하긴 한데 일단 이것만

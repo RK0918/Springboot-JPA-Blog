@@ -24,6 +24,20 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Transactional(readOnly = true)
+    public User 회원찾기(String username) {
+
+        User user = userRepository.findByUsername(username).orElseGet(() -> {
+            // 여기서는 만약 회원을 못찾았을 경우 빈객체()로 반환했지만
+            // new User("fase", "FADs") 이렇게 객체를 보낼 수도 있음
+            return new User();
+
+
+        });
+        // null 이 될 수도 있으므로 그냥 get()인데 지금은 orElseGet()이므로 null값이 아닌
+        // 빈 객체가 반환됨 (만약 usernanme을 찾았을 때 없다면)
+        return user;
+    }
 
     @Transactional
     public void 회원가입(User user) {
@@ -44,11 +58,19 @@ public class UserService {
 
         });
 
+
         // 만약 user id값이 null 이 아닐 경우 정상적으로 persistance에
         // userRepository에서 찾은 user id의 값이 할당될 것
-        String rawPassword = user.getPassword(); // 1234 원문
-        String encPassword = encoder.encode(rawPassword); // 해쉬
-        persistance.setPassword(encPassword);
+
+        // Validate 체크 ( if문 -> Ouath값이 kakao가 아니라서 null이거나 비어있으면 회원수정 x 패스워드 고정 )
+        // updateForm에선 물리적으로 수정못하게 했지만 postman이나 post를 통해 공격이 가능하기
+        // 때문에 아래 코드로 체크해주는 것이 중요
+        if (persistance.getOauth() == null || persistance.getOauth().equals("")) {
+            String rawPassword = user.getPassword(); // 1234 원문
+            String encPassword = encoder.encode(rawPassword); // 해쉬
+            persistance.setPassword(encPassword);
+            persistance.setEmail(user.getEmail());
+        }
         persistance.setEmail(user.getEmail());
 
         // 회원수정 함수 종료 시 => 서비스 종료 => 트랜잭션이 종료 => commit이 자동으로 됨
