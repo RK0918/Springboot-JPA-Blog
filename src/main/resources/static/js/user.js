@@ -31,15 +31,18 @@ let index = {
             contentType : "application/json; charset = utf-8", // body데이터가 어떤 타입인지(MIME)
             dataType : "json" // 요청을 서버로 해서 응답이 왔을 때 기본적으로 모든 것이 문자열( 생긴게 json이면 =>
         }).done(function(resp){
-            alert("회원가입 완료");
-            console.log(resp);
-            location.href = "/";
+            if(resp.status === 500)  {
+              alert("회원가입에 실패하였습니다.")
+            } else {
+                alert("회원가입이 완료되었습니다.")
+                location.href = "/";
+            }
         }).fail(function(error){
             alert(JSON.stringify(error));
         }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
 
     },
-u
+
     // 또한 회원수정 시 세션값을 변경하기 위해 username 데이터도 보내야됨.
     // 그래야 Authentication 객체를 생성할 수 있음.
 
@@ -65,10 +68,16 @@ u
                 alert("회원수정 완료");
                 console.log(resp);
                 location.href = "/";
-            }).fail(function(error){
+            }).fail(function(xhr, status, error) {
+                  console.log("HTTP 상태 코드:", xhr.status);
+                  console.log("AJAX 상태:", status);
+                  console.log("오류 내용:", error);
+                  console.log("서버 응답:", xhr.responseText);
 
-                alert(JSON.stringify(error));
-            }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
+                  alert("회원가입 실패: " + xhr.status);
+                  alert(JSON.stringify(error));
+              });
+
 
         },
 

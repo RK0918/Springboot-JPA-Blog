@@ -1,0 +1,25 @@
+/* 게시글 상세보기 내용 */
+.board-content {
+    overflow-wrap: break-word;
+}
+
+/* 게시글에 포함된 이미지 */
+.board-content img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 15px 0;
+    float: none !important;
+}
+
+/* 게시글 이미지 다음 텍스트 */
+.board-content p {
+    margin-top: 10px;
+}
+
+/* URL 복사 버튼 */
+.board-url-copy {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}

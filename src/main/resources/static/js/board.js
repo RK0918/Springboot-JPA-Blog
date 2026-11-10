@@ -13,6 +13,11 @@ let index = {
 
         });
 
+        $("#btn-reply-save").on("click", ()=> {
+            this.replySave();
+
+        });
+
     },
 
 
@@ -87,6 +92,84 @@ let index = {
                 }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
 
             },
+
+            save: function() {
+                    // alert('user의 save함수 호출됨.')
+                    let data = {
+                        title : $("#title").val(),
+                        content : $("#content").val()
+
+
+                    };
+
+                    $.ajax({
+                        type : "POST", // data(title, content)를 보낸다
+                        url : "/api/board", // 이 주소로
+                        data : JSON.stringify(data),// http body 데이터, data: data로 해버리면 java에서 던져버릴 때 java에서 이해못함. json 문자열로 변경
+                        contentType : "application/json; charset = utf-8", // body데이터가 어떤 타입인지(MIME)
+                        dataType : "json" // 요청을 서버로 해서 응답이 왔을 때 기본적으로 모든 것이 문자열( 생긴게 json이면 =>
+                    }).done(function(resp){
+                        alert("글쓰기 완료");
+                        console.log(resp);
+                        location.href = "/";
+                    }).fail(function(error){
+                        alert(JSON.stringify(error));
+                    }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
+
+                },
+
+
+            // 이 댓글이 어디에 달렸는지 알아야됨 .
+            replySave: function() {
+                    // alert('user의 save함수 호출됨.')
+                    let data = {
+                        userId : $("#userId").val(),
+                        boardId : $("#boardId").val(),
+                        content: $("#reply-content").val()
+                    };
+                    // dto로 설정시 위처럼 한 번에 받을 수 있음
+                    // dto 설정 -> detail.js에서 hidden으로 따로 데이터 설정
+                    // data에서 한 번에 받으므로 아래 url과 location.href에서
+                    // data. 추가 ex) data.boardId
+
+                    console.log("댓글 데이터:", data);
+                    console.log("게시글 ID:", boardId);
+
+
+
+                    $.ajax({
+                        type : "POST", // data(title, content)를 보낸다
+                        url : `/api/board/${data.boardId}/reply`, // 이 주소로(주소 없으면 Apicontroller에서 만들어줌)
+                        data : JSON.stringify(data),// http body 데이터, data: data로 해버리면 javal에서 던져버릴 때 java에서 이해못함. json 문자열로 변경
+                        contentType : "application/json; charset = utf-8", // body데이터가 어떤 타입인지(MIME)
+                        dataType : "json" // 요청을 서버로 해서 응답이 왔을 때 기본적으로 모든 것이 문자열( 생긴게 json이면 =>
+                    }).done(function(resp){
+                        alert("댓글 작성이 완료되었습니다");
+                        location.href = `/board/${data.boardId}`;
+                    }).fail(function(error){
+                        alert(JSON.stringify(error));
+                    }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
+
+                },
+
+
+            replyDelete: function(boardId, replyId) {
+                                $.ajax({
+                                    type : "DELETE", // data(title, content)를 보낸다
+                                    url : `/api/board/${boardId}/reply/${replyId}`, // 이 주소로(주소 없으면 BoardApicontroller에서 만들어줌) -> 없으므로 만들어줘야됨 .
+                                    // data랑 contentype은 필요없음. delete이기 때문.
+                                    dataType : "json"
+                                }).done(function(resp){
+                                    alert("댓글 삭제 성공");
+                                    location.href = `/board/${boardId}`;
+                                }).fail(function(error){
+                                    alert(JSON.stringify(error));
+                                }); // ajax통신을 통해서 3개의 ㅍ ㅏ라미터를 데이터를 json 변경하고 insert 요청
+
+                            },
+
+
+
 
 
    }

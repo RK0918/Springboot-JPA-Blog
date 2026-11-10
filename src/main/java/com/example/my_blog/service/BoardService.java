@@ -1,10 +1,15 @@
 package com.example.my_blog.service;
 
 
+import com.example.my_blog.dto.ReplySaveRequestDto;
 import com.example.my_blog.model.Board;
+import com.example.my_blog.model.Reply;
 import com.example.my_blog.model.RoleType;
 import com.example.my_blog.model.User;
 import com.example.my_blog.repository.BoardRepository;
+import com.example.my_blog.repository.ReplyRepository;
+import com.example.my_blog.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 // 스프링이 컴포넌트 스캔을 통해서 Bean에 등록, IoC를 해줌
+
 @Service
+@RequiredArgsConstructor // 생성자
 public class BoardService {
 
-    @Autowired
-    private BoardRepository boardRepository;
+    private final BoardRepository boardRepository;
+    private final ReplyRepository replyRepository;
 
 
     @Transactional
@@ -75,6 +82,56 @@ public class BoardService {
         // 2. 이때 더티체킹이 일어남(영속화되어 있던 board 데이터가 달라졌기 때문에)
         // 3. 자동으로 업데이트가 됨 , DB flush
 
+    }
+
+    // boardApiControlle ->replySave()에서 어떤 데이터를 service에서 요청하는지 확인
+    // reply, boardId, principal(User오브젝트를 담고있음)
+    @Transactional
+    public void 댓글쓰기(ReplySaveRequestDto replySaveRequestDto) {
+
+
+/* ReplyRepository에서 네이티브쿼리 작성시, 영속화할 필요가 없어짐
+
+        User user = userRepository.findById(replySaveRequestDto.getUserId())
+                .orElseThrow(() -> {
+                    return new IllegalArgumentException("댓글 쓰기 실패 : 유저 id 찾기 실패");
+                }); // 영속화 완료
+
+        Board board = boardRepository.findById(replySaveRequestDto.getBoardId())
+                .orElseThrow(() -> {
+                    return new IllegalArgumentException("댓글 쓰기 실패 : 게시글 id 찾기 실패");
+                }); // 영속화 완료
+
+
+        // dto로 인해 userRepository를 di해서 @AutoWired 해줌
+        // reply 객체를 따로 만들어줄건데 builder
+
+        Reply reply = Reply.builder()
+                .user(user)
+                .board(board)
+                .content(replySaveRequestDto.getContent())
+                .build();
+
+        // 아래 코드로도 가능한데 builder 패턴으로도 가능
+        // Reply reply = new Reply();
+        // reply.update(user, board, replySaveRequestDto.getContent());
+
+
+        replyRepository.save(reply);
+*/
+
+        // ReplyRepository에서 네이티브쿼리 작성시, 영속화할 필요가 없어짐
+        // dto 설정 -> repository에서 네이티브쿼리 작성
+        int result = replyRepository.mSave(replySaveRequestDto.getUserId(), replySaveRequestDto.getBoardId(), replySaveRequestDto.getContent());
+        System.out.println("boardService : " + result);
+        // 오브젝트를 출력하게되면 자동으로 toString()이 호출됨
+
+
+    }
+
+    @Transactional
+    public void 댓글삭제(int replyId) {
+        replyRepository.deleteById(replyId);
     }
 
 /* 전통적인 로그인방식

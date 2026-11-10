@@ -1,5 +1,6 @@
 package com.example.my_blog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,16 +60,19 @@ public class Board {
 
 
     // 아래 (mappedBy = "board")는 reply 클래스의 private Board board << 에서 board를 적어주면 됨
-    // mappedBy 연관관계의 주인이 아니다. (난 FK가 아님) DB에 컬럼xx
-    // @JoinColumn(name="replyId") 가 굳이 필요없음 강의, replyId가 들어오는 게 말이 안됨
+    // mappedBy 연관관계의 주인이 아니다. (따라서 FK가 아니고 DB에 해당 컬럼이 없음 **중요)
+    // @JoinColumn(name="replyId") 가 굳이 필요없음 강의, replyId가 들어오는 게 말이 안됨(애초에 db가 없으니)
     // 답변(reply)이 늘어나서 1, 2... 가 늘어나게 되면 1정규화가 깨지게 됨.(원자성x), 따라서 필요없음
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
-    private List<Reply> reply; // reply는 연관관계의 주인이 아님. board를 셀렉트 할 때 join문을 통해 값을 얻기 위해 필요한 것
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) // 게시글 삭제-> 같이 삭제
+    @JsonIgnoreProperties({"board"})
+    @OrderBy("id desc") // EAGER전략으로 Fetch할 경우, id값을 기준으로 내림차순(id값이 큰게 최신댓글이므로)
+    // 다른곳에서 reply가 참조될때 reply 안에 있는 board와 user는 참조되지 않는다. 다만 직접 reply가 참조될 때는 참조된다
+    private List<Reply> replys; // reply는 연관관계의 주인이 아님. board를 셀렉트 할 때 join문을 통해 값을 얻기 위해 필요한 것
     // reply는 수십 만건이 될 수도 있으므로 들고올수도, 들고오지 않을 수도 있음 => Lazy 기법 사용
     // 그러나 ! 댓글을 펼치기나, 다른 팝업을 통해 보는 게 아니고 게시물을 눌러서 상세보기를 통해 한 꺼번에 볼 경우
     // -> 다시 EAGER 기법을 쓰는 것이 맞다.
-    // 위 reply같은 경우는 DB가 아님. 나중에 셀렉트하기 위해 필요한 것임.
-
+    // 위 reply같은 경우는 DB가 아님. 나중에 board를 셀렉트할 때 reply를 가져오게됨.
+    // ex) BoardControlle에서 board/detail에서 board를 가져올 때 같이 reply도 가져오게 됨.
 
     @CreationTimestamp
     private Timestamp createDate; // Timestamp(security가 아니라 sql임 주의)

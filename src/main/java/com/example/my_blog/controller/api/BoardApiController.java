@@ -2,8 +2,10 @@ package com.example.my_blog.controller.api;
 
 
 import com.example.my_blog.config.auth.PrincipalDetail;
+import com.example.my_blog.dto.ReplySaveRequestDto;
 import com.example.my_blog.dto.ResponseDto;
 import com.example.my_blog.model.Board;
+import com.example.my_blog.model.Reply;
 import com.example.my_blog.model.User;
 import com.example.my_blog.service.BoardService;
 import com.example.my_blog.service.UserService;
@@ -43,14 +45,33 @@ public class BoardApiController {
 
     @PutMapping("/api/board/{id}")
     public ResponseDto<Integer> update(@PathVariable int id, @RequestBody Board board) {
-
-
         boardService.글수정하기(id, board);
 
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 
 
     }
+
+
+    // 데이터 받을 때 컨트롤러에서 dto를 만들어서 받는게 좋다.
+    // dto를 사용하지 않은 이유는 아직 소규모 프로젝트이기 때문.
+    @PostMapping("/api/board/{boardId}/reply")
+    public ResponseDto<Integer> replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
+        // 대신 dto를 사용하기 위해선 detail.js에서 principal.user.id를 따로 hidden으로 추가해줘야 됟
+
+        boardService.댓글쓰기(replySaveRequestDto); // service에서 dto로 설정해준 변수값 수정
+        // BoardService에선 User user를 받으면 됨.
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+        // 응답을 할 것이고 baord.js에서 응답이 잘되면 done(function(resp)), 되지 않으면 fail(....)
+    }
+
+    @DeleteMapping("/api/board/{boardId}/reply/{replyId}")
+    public ResponseDto<Integer> replyDelete(@PathVariable int replyId) {
+        boardService.댓글삭제(replyId); //
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+    }
+
+
 
 
 
