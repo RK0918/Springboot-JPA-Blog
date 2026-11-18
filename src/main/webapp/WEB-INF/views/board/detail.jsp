@@ -81,7 +81,9 @@
                             <div class="font-italic"> 작성자 : ${reply.user.username} &nbsp; </div>
                             <!-- onclic으로 하고 replyDelete함수를 만들어서 board와 reply id를 전달
                             board.js에서 replyDelete함수(여기서 board.id와 user.id를 매개변수로 받음) 만들것-->
+                            <c:if test="${reply.user.id == principal.user.id}">
                             <button onclick ="index.replyDelete(${board.id}, ${reply.id})" class="badge">삭제 </button>
+                            </c:if>
                        </div>
                     </li>
                 </c:forEach>
